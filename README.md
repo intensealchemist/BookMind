@@ -60,8 +60,8 @@ Follow these instructions to get a copy of the project up and running on your lo
 
 1.  **Clone the repository**
     ```bash
-    git clone https://github.com/intensealchemist/Book-Summarizer-and-recommendation.git
-    cd Book-Summarizer-and-recommendation
+    git clone https://github.com/intensealchemist/BookMind.git
+    cd BookMind
     ```
 
 2.  **Create a Virtual Environment**
