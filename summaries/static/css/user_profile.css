@@ -1,0 +1,121 @@
+/* General Styling */
+body {
+    font-family: 'Arial', sans-serif;
+    background-color: #1f1f1f;
+    color: #f0f0f0;
+    margin: 0;
+    padding: 0;
+}
+
+h1, h2, h3 {
+    color: #ff9800;
+}
+
+a {
+    text-decoration: none;
+    color: #ff9800;
+}
+
+a:hover {
+    color: #cc7a00;
+}
+
+/* Profile Header */
+.profile-header {
+    background: #292929;
+    padding: 30px 20px;
+    text-align: center;
+    box-shadow: 0 4px 10px rgba(0, 0, 0, 0.5);
+}
+
+.profile-card {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 20px;
+}
+
+.avatar {
+    width: 100px;
+    height: 100px;
+    border-radius: 50%;
+    border: 3px solid #ff9800;
+}
+
+.profile-info {
+    text-align: left;
+}
+
+/* Stats Section */
+.user-stats {
+    background: #2b2b2b;
+    padding: 20px;
+    margin: 20px auto;
+    border-radius: 8px;
+    text-align: center;
+}
+
+.stats-grid {
+    display: flex;
+    justify-content: space-around;
+    margin-top: 15px;
+}
+
+.stat-card {
+    background: #3b3b3b;
+    padding: 15px;
+    border-radius: 8px;
+    box-shadow: 0 2px 5px rgba(0, 0, 0, 0.3);
+    width: 150px;
+}
+
+.stat-card h3 {
+    margin-bottom: 5px;
+}
+
+/* Book Sections */
+.book-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+    gap: 20px;
+    padding: 20px;
+}
+
+.book-card {
+    background: #2b2b2b;
+    padding: 15px;
+    border-radius: 8px;
+    box-shadow: 0 2px 5px rgba(0, 0, 0, 0.3);
+    text-align: center;
+}
+
+.book-cover {
+    width: 100%;
+    height: 150px;
+    object-fit: cover;
+    border-radius: 5px;
+}
+
+.empty-message {
+    text-align: center;
+    color: #aaa;
+    font-size: 1.2em;
+}
+
+/* Button */
+.btn {
+    display: inline-block;
+    margin-top: 10px;
+    padding: 10px 15px;
+    background: #ff9800;
+    color: #fff;
+    border: none;
+    border-radius: 5px;
+    font-weight: bold;
+    cursor: pointer;
+    transition: background-color 0.3s;
+}
+
+.btn:hover {
+    background: #cc7a00;
+}

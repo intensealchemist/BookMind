@@ -1,0 +1,49 @@
+{% load static %}
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Books in Category</title>
+    <link rel="stylesheet" href="{% static 'css/Category_books.css' %}">
+</head>
+<body>
+    <header>
+        <h1>Books in Selected Category</h1>
+    </header>
+
+    <main>
+        {% if book_list %}
+        <ul class="book-list">
+            {% for book in book_list %}
+            <li class="book-item">
+                <h2 class="book-title">
+                    <a href="{% url 'api_book_detail' book.key %}">{{ book.title }}</a>
+                </h2>
+                <p class="book-author">by {{ book.author }}</p>
+                {% if book.cover_url %}
+                <img src="{{ book.cover_url }}" alt="Cover of {{ book.title }}" class="book-cover">
+                {% else %}
+                <p>No cover available.</p>
+                {% endif %}
+                {% if book.read_url %}
+                <a href="{{ book.read_url }}" target="_blank" class="book-link">Read Now</a>
+                {% else %}
+                <p>Not available for reading.</p>
+                {% endif %}
+                {% if book.url %}
+                <a href="{{ book.url }}" target="_blank" class="book-link">View more details</a>
+                {% endif %}
+            </li>
+            {% endfor %}
+        </ul>
+        {% else %}
+        <p class="no-books">No books found in this category. Please try another category.</p>
+        {% endif %}
+    </main>
+
+    <footer>
+        <p>&copy; 2024 AI-powered Book Summarizer and Recommendation. All rights reserved.</p>
+    </footer>
+</body>
+</html>

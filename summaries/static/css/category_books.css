@@ -1,0 +1,146 @@
+/* General styles */
+body {
+    font-family: 'Roboto', sans-serif;
+    margin: 0;
+    padding: 0;
+    background-color: #F5F7FA;
+    color: #333333;
+    line-height: 1.6;
+}
+
+header {
+    background-color: #1F77B4;
+    color: white;
+    padding: 20px;
+    text-align: center;
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+}
+
+header h1 {
+    margin: 0;
+    font-size: 2.5rem;
+    letter-spacing: 1px;
+    font-weight: 500;
+}
+
+/* Main content styles */
+main {
+    padding: 30px;
+    max-width: 1200px;
+    margin: 0 auto;
+}
+
+.book-list {
+    list-style-type: none;
+    padding: 0;
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+    gap: 25px;
+}
+
+.book-item {
+    background-color: #FFFFFF;
+    border-radius: 10px;
+    box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+    padding: 20px;
+    text-align: center;
+    transition: transform 0.2s ease-in-out, box-shadow 0.2s ease-in-out;
+    overflow: hidden;
+}
+
+.book-item:hover {
+    transform: translateY(-5px);
+    box-shadow: 0 6px 12px rgba(0, 0, 0, 0.2);
+}
+
+.book-title {
+    font-size: 1.5rem;
+    margin: 10px 0;
+    color: #1F77B4;
+    font-weight: 500;
+}
+
+.book-title a {
+    text-decoration: none;
+    color: inherit;
+}
+
+.book-title a:hover {
+    color: #125B92;
+    text-decoration: underline;
+}
+
+.book-author {
+    font-size: 1rem;
+    color: #555555;
+    margin-bottom: 15px;
+    font-style: italic;
+}
+
+.book-cover {
+    width: 100%;
+    height: auto;
+    border-radius: 8px;
+    margin-bottom: 15px;
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+}
+
+.book-link {
+    display: inline-block;
+    margin-top: 10px;
+    text-decoration: none;
+    color: white;
+    background-color: #E17055;
+    padding: 10px 15px;
+    border-radius: 5px;
+    font-size: 0.9rem;
+    font-weight: 500;
+    transition: background-color 0.3s ease-in-out, box-shadow 0.3s ease-in-out;
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.15);
+}
+
+.book-link:hover {
+    background-color: #D05B44;
+    box-shadow: 0 4px 6px rgba(0, 0, 0, 0.2);
+}
+
+.no-books {
+    font-size: 1.25rem;
+    color: #999999;
+    text-align: center;
+    margin: 50px 0;
+    font-weight: 500;
+}
+
+/* Footer styles */
+footer {
+    background-color: #222831;
+    color: white;
+    text-align: center;
+    padding: 15px 20px;
+    margin-top: 20px;
+    font-size: 0.9rem;
+}
+
+footer p {
+    margin: 0;
+}
+
+/* Responsive design */
+@media (max-width: 768px) {
+    header h1 {
+        font-size: 2rem;
+    }
+
+    .book-title {
+        font-size: 1.2rem;
+    }
+
+    .book-author {
+        font-size: 0.95rem;
+    }
+
+    .book-link {
+        font-size: 0.85rem;
+    }
+}

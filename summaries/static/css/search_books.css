@@ -1,0 +1,55 @@
+.container {
+    max-width: 800px;
+    margin: 0 auto;
+    padding: 20px;
+    font-family: Arial, sans-serif;
+}
+
+.search-form {
+    display: flex;
+    gap: 10px;
+}
+
+.search-input {
+    flex: 1;
+    padding: 10px;
+    font-size: 16px;
+}
+
+.search-button {
+    padding: 10px 20px;
+    font-size: 16px;
+    background-color: #007bff;
+    color: #fff;
+    border: none;
+    cursor: pointer;
+}
+
+.results-list {
+    list-style: none;
+    padding: 0;
+}
+
+.result-item {
+    margin-bottom: 10px;
+}
+
+.read-link {
+    color: green;
+    font-weight: bold;
+    text-decoration: none;
+}
+
+.read-link:hover {
+    text-decoration: underline;
+}
+
+.no-read {
+    color: red;
+    font-style: italic;
+}
+
+.book-cover {
+    max-width: 100px;
+    margin: 5px 0;
+}

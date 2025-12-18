@@ -1,0 +1,23 @@
+<form action="" method="post" enctype="multipart/form-data">
+    {% csrf_token %}
+    <input type="file" name="pdf">
+    <button type="submit">Summarize</button>
+</form>
+
+
+
+from summaries.models import Book
+
+for book in Book.objects.all():
+    if book.file:  # If file is not null
+        # Print current path for debugging
+        print(f"Before: {book.file.path}")
+        
+        # Correct the path if it contains the duplicated 'pdfs/pdfs'
+        if 'pdfs/pdfs/' in book.file.name:
+            corrected_path = book.file.name.replace('pdfs/pdfs/', 'pdfs/')
+            book.file = corrected_path
+            book.save()
+
+        # Print updated path for confirmation
+        print(f"After: {book.file.path}")

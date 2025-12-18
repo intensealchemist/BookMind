@@ -1,0 +1,89 @@
+{% load static %}
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>{{ user.username }}'s Profile</title>
+    <link href="https://cdn.jsdelivr.net/npm/tailwindcss@2.2.19/dist/tailwind.min.css" rel="stylesheet">
+    <link rel="stylesheet" href="{% static 'css/user_profile.css' %}">
+</head>
+<body class="bg-gray-100">
+    <header class="bg-indigo-600 text-white py-4">
+        <div class="container mx-auto flex justify-between items-center px-4">
+            <h1 class="text-2xl font-bold">Welcome, {{ user.username}}!</h1>
+            <nav>
+                <a href="{% url 'home' %}" class="text-white hover:underline">Home</a>
+                <form method="POST" action="{% url 'logout' %}" class="inline">
+                    {% csrf_token %}
+                    <button type="submit" class="ml-4 text-white hover:underline">Logout</button>
+                </form>
+            </nav>
+        </div>
+    </header>
+    <header class="bg-white shadow">
+        <div class="max-w-4xl mx-auto p-5 flex items-center">
+            {% if profile.profile_picture %}
+                    <img src="{{ profile.profile_picture.url }}" alt="Profile Picture" class="w-16 h-16 rounded-full object-cover border">
+                {% else %}
+                    <img src="{% static 'images/default_avatar.png' %}" alt="Default Profile Picture" class="w-16 h-16 rounded-full object-cover border">
+                {% endif %}
+            <div class="ml-5">
+                <h1 class="text-2xl font-semibold text-gray-800">{{ user.username }}</h1>
+                <p class="text-gray-700">{{ user.first_name }} {{ user.last_name }}</p>
+                <p class="text-gray-600"><strong>Email:</strong> {{ user.email }}</p>
+                <div class="mt-4">
+                    <a href="{% url 'edit_profile' %}" class="bg-indigo-600 text-white py-2 px-4 rounded-lg hover:bg-indigo-700 block text-center">Edit Profile</a>
+                </div>
+            </div>
+            
+        </div>
+    </header>
+    <main class="max-w-4xl mx-auto p-5">
+        <section class="my-6">
+            <h2 class="text-xl font-bold mb-4 text-gray-800">Your Stats</h2>
+            <div class="grid grid-cols-1 sm:grid-cols-3 gap-4">
+                <div class="bg-blue-100 p-4 rounded-lg shadow text-center">
+                    <h3 class="font-semibold text-gray-800">Books Liked</h3>
+                    <p class="text-2xl text-blue-600">{{ liked_books.count }}</p>
+                </div>
+                <div class="bg-blue-100 p-4 rounded-lg shadow text-center">
+                    <h3 class="font-semibold text-gray-800">Books Bookmarked</h3>
+                    <p class="text-2xl text-blue-600">{{ bookmarks.count }}</p>
+                </div>
+            </div>
+        </section>
+        <section class="my-6">
+            <h2 class="text-xl font-bold mb-4 text-gray-800">Liked Books</h2>
+            <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4">
+                {% for book in liked_books %}
+                    <div class="bg-white p-4 rounded-lg shadow">
+                        <img src="{{ book.cover_url }}" alt="Cover of {{ book.title }}" class="w-full h-48 object-cover rounded">
+                        <h3 class="mt-2 font-semibold text-lg text-gray-800">{{ book.title }}</h3>
+                        <p class="text-gray-700">by {{ book.author }}</p>
+                        <a href="{% url 'book_detail' book.id %}" class="mt-3 inline-block bg-blue-500 text-white py-2 px-4 rounded hover:bg-blue-600 transition">Read More</a>
+                    </div>
+                {% empty %}
+                    <p class="col-span-1 text-center text-gray-500">You haven't liked any books yet.</p>
+                {% endfor %}
+            </div>
+        </section>
+        <section class="my-6">
+            <h2 class="text-xl font-bold mb-4 text-gray-800">Bookmarked Books</h2>
+            <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4">
+                {% for bookmark in bookmarks %}
+                    <div class="bg-white p-4 rounded-lg shadow">
+                        <img src="{{ bookmark.book.cover_url }}" alt="Cover of {{ bookmark.book.title }}" class="w-full h-48 object-cover rounded">
+                        <h3 class="mt-2 font-semibold text-lg text-gray-800">{{ bookmark.book.title }}</h3>
+                        <p class="text-gray-700">by {{ bookmark.book.author }}</p>
+                        <p class="text-gray-600"><strong>Location:</strong> {{ bookmark.location }}</p>
+                        <a href="{% url 'book_detail' bookmark.book.id %}" class="mt-3 inline-block bg-blue-500 text-white py-2 px-4 rounded hover:bg-blue-600 transition">Read More</a>
+                    </div>
+                {% empty %}
+                    <p class="col-span-1 text-center text-gray-500">You haven't bookmarked any books yet.</p>
+                {% endfor %}
+            </div>
+        </section>
+    </main>
+</body>
+</html>

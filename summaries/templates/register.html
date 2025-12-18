@@ -1,0 +1,81 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Register</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <style>
+        .instructions {
+            display: none;
+            font-size: 0.875rem;
+            color: #6b7280; /* Tailwind gray-500 */
+        }
+    </style>
+    <script>
+        function toggleInstructions(field) {
+            const instructions = document.getElementById(`${field}-instructions`);
+            if (instructions.style.display === "none") {
+                instructions.style.display = "block";
+            } else {
+                instructions.style.display = "none";
+            }
+        }
+
+        function togglePasswordVisibility(fieldId, toggleBtnId) {
+            const passwordField = document.getElementById(fieldId);
+            const toggleButton = document.getElementById(toggleBtnId);
+            if (passwordField.type === "password") {
+                passwordField.type = "text";
+                toggleButton.textContent = "Hide Password";
+            } else {
+                passwordField.type = "password";
+                toggleButton.textContent = "Show Password";
+            }
+        }
+    </script>
+</head>
+<body class="bg-gray-100 min-h-screen flex items-center justify-center">
+    <div class="w-full max-w-md bg-white rounded-lg shadow-md p-6">
+        <h2 class="text-2xl font-semibold text-center text-gray-700 mb-6">Create an Account</h2>
+        <form action="{% url 'register' %}" method="post" enctype="multipart/form-data" class="space-y-4">
+            {% csrf_token %}
+            {% for field in form %}
+            <div>
+                <label for="{{ field.id_for_label }}" class="block font-medium text-gray-700">
+                    {{ field.label }}:
+                </label>
+                {{ field }}
+                {% if field.help_text %}
+                <button 
+                    type="button" 
+                    onclick="toggleInstructions('{{ field.name }}')" 
+                    class="text-blue-500 text-sm underline mt-1"
+                >
+                    Show Instructions
+                </button>
+                <div id="{{ field.name }}-instructions" class="instructions">
+                    {{ field.help_text }}
+                </div>
+                {% endif %}
+                {% for error in field.errors %}
+                <p class="text-red-500 text-sm mt-1">{{ error }}</p>
+                {% endfor %}
+            </div>
+            {% endfor %}
+            <div>
+                <button
+                    type="submit"
+                    class="w-full bg-blue-500 text-white py-2 px-4 rounded-lg hover:bg-blue-600 transition duration-200"
+                >
+                    Register
+                </button>
+            </div>
+        </form>
+        <p class="mt-4 text-sm text-gray-500 text-center">
+            Already have an account? 
+            <a href="{% url 'login' %}" class="text-blue-500 hover:underline">Login</a>
+        </p>
+    </div>
+</body>
+</html>

@@ -1,0 +1,185 @@
+{% extends 'base.html' %}
+{% load static %}
+
+{% block title %}Discover{% endblock %}
+
+{% block content %}
+<!-- Hero Section -->
+<div class="relative overflow-hidden rounded-3xl bg-gray-800 border border-gray-700 mb-12">
+    <div
+        class="absolute top-0 right-0 -mt-20 -mr-20 w-96 h-96 bg-emerald-500/20 rounded-full blur-3xl pointer-events-none">
+    </div>
+    <div
+        class="absolute bottom-0 left-0 -mb-20 -ml-20 w-72 h-72 bg-blue-500/10 rounded-full blur-3xl pointer-events-none">
+    </div>
+
+    <div
+        class="relative z-10 px-8 py-16 sm:px-16 sm:py-24 text-center sm:text-left flex flex-col md:flex-row items-center justify-between gap-12">
+        <div class="max-w-2xl">
+            <h1 class="text-4xl sm:text-5xl font-extrabold tracking-tight text-white mb-6">
+                Discover your next <br>
+                <span
+                    class="text-transparent bg-clip-text bg-gradient-to-r from-emerald-400 to-cyan-400 text-glow">Favorite
+                    Book</span>
+            </h1>
+            <p class="text-lg text-gray-400 mb-8 leading-relaxed">
+                Dive into a world of knowledge with AI-powered summaries and personalized recommendations tailored just
+                for you.
+            </p>
+            <div class="flex flex-col sm:flex-row gap-4">
+                <a href="{% url 'search_books' %}"
+                    class="inline-flex items-center justify-center px-6 py-3 border border-transparent text-base font-medium rounded-xl text-white bg-emerald-600 hover:bg-emerald-700 transition shadow-lg shadow-emerald-500/25">
+                    Explore Books
+                </a>
+                {% if not user.is_authenticated %}
+                <a href="{% url 'register' %}"
+                    class="inline-flex items-center justify-center px-6 py-3 border border-gray-600 text-base font-medium rounded-xl text-gray-300 hover:text-white hover:bg-gray-700 transition">
+                    Join Community
+                </a>
+                {% endif %}
+            </div>
+        </div>
+
+        <!-- Decorative 3D-ish Element (Abstract book stack visual) -->
+        <div class="hidden md:block relative w-64 h-80">
+            <div
+                class="absolute inset-0 bg-gradient-to-br from-gray-700 to-gray-800 rounded-lg transform rotate-6 shadow-2xl border border-gray-600">
+            </div>
+            <div
+                class="absolute inset-0 bg-gradient-to-br from-gray-800 to-gray-900 rounded-lg transform -rotate-3 shadow-2xl border border-gray-700 flex items-center justify-center">
+                <i class="fa-solid fa-book-open text-6xl text-emerald-500/50"></i>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- Categories Pills -->
+<div class="mb-16">
+    <div class="flex items-center justify-between mb-6">
+        <h2 class="text-2xl font-bold text-white">Categories</h2>
+        <a href="#" class="text-sm text-emerald-400 hover:text-emerald-300 font-medium">View all</a>
+    </div>
+    <div class="flex flex-wrap gap-3">
+        {% for category in categories %}
+        <a href="{% url 'category_books' category.id %}"
+            class="px-4 py-2 rounded-full bg-gray-800 border border-gray-700 text-gray-300 text-sm font-medium hover:bg-gray-700 hover:text-white hover:border-gray-600 transition-all">
+            {{ category.name }}
+        </a>
+        {% empty %}
+        <p class="text-gray-500 text-sm">No categories found.</p>
+        {% endfor %}
+    </div>
+</div>
+
+<!-- Featured / Recommendations Grid -->
+{% if user.is_authenticated and local_recommendations %}
+<section class="mb-16">
+    <div class="flex items-center gap-3 mb-8">
+        <div class="p-2 bg-emerald-500/10 rounded-lg text-emerald-400">
+            <i class="fa-solid fa-sparkles"></i>
+        </div>
+        <h2 class="text-2xl font-bold text-white">Recommended for You</h2>
+    </div>
+
+    <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6">
+        {% for book in local_recommendations %}
+        <div
+            class="group relative bg-gray-800 rounded-2xl overflow-hidden border border-gray-700 hover:border-emerald-500/50 hover:shadow-2xl hover:shadow-emerald-500/10 transition-all duration-300">
+            <!-- Cover Image -->
+            <div class="aspect-[2/3] overflow-hidden bg-gray-900 relative">
+                {% if book.cover_url %}
+                <img src="{{ book.cover_url }}" alt="{{ book.title }}"
+                    class="w-full h-full object-cover transform group-hover:scale-105 transition duration-500">
+                {% else %}
+                <div class="w-full h-full flex items-center justify-center text-gray-600">
+                    <i class="fa-solid fa-book text-4xl"></i>
+                </div>
+                {% endif %}
+
+                <!-- Hover Overlay Actions -->
+                <div
+                    class="absolute inset-0 bg-black/60 opacity-0 group-hover:opacity-100 transition-opacity duration-300 flex items-center justify-center gap-3">
+                    <button
+                        class="bookmark-btn w-10 h-10 rounded-full bg-white/10 backdrop-blur-md flex items-center justify-center text-white hover:bg-emerald-500 transition"
+                        data-book-id="{{ book.id }}" title="Bookmark">
+                        <i class="fa-regular fa-bookmark"></i>
+                    </button>
+                    <a href="{% url 'book_detail' book.id %}"
+                        class="px-4 py-2 bg-white text-gray-900 rounded-full text-sm font-bold hover:bg-emerald-50 transition transform hover:scale-105">
+                        View
+                    </a>
+                </div>
+            </div>
+
+            <!-- Content -->
+            <div class="p-5">
+                <h3
+                    class="text-lg font-bold text-white mb-1 line-clamp-1 group-hover:text-emerald-400 transition-colors">
+                    {{ book.title }}</h3>
+                <p class="text-sm text-gray-400 mb-3">{{ book.author }}</p>
+
+                <div class="flex items-center justify-between text-xs text-gray-500">
+                    <div class="flex items-center gap-1">
+                        <i class="fa-solid fa-star text-yellow-500"></i>
+                        <span class="text-gray-300">{{ book.sentiment|floatformat:1 }}</span>
+                    </div>
+                </div>
+            </div>
+        </div>
+        {% endfor %}
+    </div>
+</section>
+{% endif %}
+
+<!-- Popular Section -->
+<section>
+    <div class="flex items-center justify-between mb-8">
+        <h2 class="text-2xl font-bold text-white">Popular Community Picks</h2>
+    </div>
+
+    <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+        {% for book in popular_books %}
+        <div class="flex gap-4 p-4 bg-gray-800 rounded-2xl border border-gray-700 hover:bg-gray-750 transition-colors">
+            <div class="w-24 h-36 flex-shrink-0 bg-gray-700 rounded-lg overflow-hidden">
+                {% if book.cover_url %}
+                <img src="{{ book.cover_url }}" class="w-full h-full object-cover">
+                {% else %}
+                <div class="w-full h-full flex items-center justify-center text-gray-500"><i
+                        class="fa-solid fa-book"></i></div>
+                {% endif %}
+            </div>
+            <div class="flex flex-col justify-center">
+                <h3 class="text-lg font-bold text-white mb-1">{{ book.title }}</h3>
+                <p class="text-sm text-gray-400 mb-2">{{ book.author }}</p>
+                <p class="text-xs text-gray-500 line-clamp-3 mb-3">{{ book.summary|default:"No summary available." }}
+                </p>
+                <a href="{% url 'book_detail' book.id %}"
+                    class="text-sm font-medium text-emerald-400 hover:text-emerald-300">Read more <i
+                        class="fa-solid fa-arrow-right ml-1"></i></a>
+            </div>
+        </div>
+        {% endfor %}
+    </div>
+</section>
+
+<!-- Scripts -->
+<script>
+    document.querySelectorAll('.bookmark-btn').forEach(button => {
+        button.addEventListener('click', (e) => {
+            e.preventDefault();
+            // Add logic for bookmark toggle visual
+            const icon = button.querySelector('i');
+            icon.classList.toggle('fa-regular');
+            icon.classList.toggle('fa-solid');
+            icon.classList.toggle('text-emerald-400');
+
+            // Actual fetch call (simplified from original)
+            const bookId = button.dataset.bookId;
+            fetch(`/api/bookmark/${bookId}/`, {
+                method: 'POST',
+                headers: { 'X-CSRFToken': '{{ csrf_token }}' }
+            });
+        });
+    });
+</script>
+{% endblock %}

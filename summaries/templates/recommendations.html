@@ -1,0 +1,38 @@
+{% load static %}
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Book Recommendations</title>
+    <link rel="stylesheet" href="{% static 'css/style.css' %}">  <!-- Assuming you have a CSS file -->
+</head>
+<body>
+  <h1>Recommended Books</h1>
+
+  <h2>From Local Recommendations</h2>
+  {% for book in local_recommendations %}
+                    <div class="book-card bg-white p-4 rounded-lg shadow">
+                        <h3 class="font-semibold text-lg">{{ book.title }}</h3>
+                        <p class="text-gray-600">by {{ book.author }}</p>
+                        <a href="{% url 'book_detail' book.id %}" class="btn bg-blue-500 text-white py-2 px-4 rounded hover:bg-blue-600 transition">Read More</a>
+                    </div>
+                {% empty %}
+                    <p class="col-span-full text-center text-gray-500">No local recommendations available at the moment.</p>
+                {% endfor %}
+  
+  <h2>From Open Library</h2>
+  <ul>
+      {% for book in open_library_books %}
+      <li>
+          <h3>{{ book.title }}</h3>
+          <p><strong>Author:</strong> {{ book.author }}</p>
+          {% if book.cover_url %}
+          <img src="{{ book.cover_url }}" alt="{{ book.title }}" style="width:100px;height:auto;">
+          {% endif %}
+      </li>
+      {% endfor %}
+  </ul>
+  
+</body>
+</html>
