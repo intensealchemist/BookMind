@@ -36,6 +36,7 @@ requests==2.32.3
 python-dotenv==1.0.1
 PyPDF2==3.0.1
 pypdf==5.1.0
+pymupdf  # Required for 'import fitz'
 pillow==10.4.0
 beautifulsoup4==4.12.3
 tqdm==4.66.5
