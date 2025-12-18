@@ -58,14 +58,14 @@ MIDDLEWARE = [
     'corsheaders.middleware.CorsMiddleware',
 ]
 
-ROOT_URLCONF = 'book_app.urls'
+ROOT_URLCONF = 'bookmind.urls'
 
 TEMPLATES = [
     {
         'BACKEND': 'django.template.backends.django.DjangoTemplates',
         'DIRS': [
                 BASE_DIR / 'templates',
-                BASE_DIR / 'book_app' / 'summaries' / 'templates',
+                BASE_DIR / 'bookmind' / 'summaries' / 'templates',
                 ],
         'APP_DIRS': True,
         'OPTIONS': {
@@ -79,7 +79,7 @@ TEMPLATES = [
     },
 ]
 
-WSGI_APPLICATION = 'book_app.wsgi.application'
+WSGI_APPLICATION = 'bookmind.wsgi.application'
 
 
 # Database
