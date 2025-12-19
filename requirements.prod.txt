@@ -44,7 +44,7 @@ tqdm==4.66.5
 
 # Langchain for LLM features (pinned to avoid pip backtracking)
 langchain==0.3.15
-langchain-core==0.3.29
+langchain-core==0.3.31
 langchain-community==0.3.15
 langchain-openai==0.3.0
 langchain-text-splitters==0.3.4
