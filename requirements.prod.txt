@@ -24,7 +24,7 @@ transformers==4.48.3
 sentence-transformers
 spacy==3.8.2
 pandas==2.2.2
-numpy==2.0.2
+numpy>=1.26.0,<2.3
 scikit-learn==1.5.2
 scipy==1.14.1
 textblob==0.18.0.post0
@@ -43,7 +43,8 @@ beautifulsoup4==4.12.3
 tqdm==4.66.5
 
 # Langchain for LLM features (pinned to avoid pip backtracking)
-langchain==0.3.7
-langchain-core==0.3.15
-langchain-community==0.3.7
-langchain-openai==0.2.3
+langchain==0.3.15
+langchain-core==0.3.29
+langchain-community==0.3.15
+langchain-openai==0.3.0
+langchain-text-splitters==0.3.4
