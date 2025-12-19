@@ -1,11 +1,6 @@
-from sentence_transformers import SentenceTransformer
-from sklearn.metrics.pairwise import cosine_similarity
 from collections import defaultdict
 import random
 import requests
-from .models import Book, UserActivity, Category, OpenLibraryBook
-import pandas as pd
-import numpy as np
 import logging
 
 logger = logging.getLogger(__name__)
@@ -17,8 +12,10 @@ MAX_RESULTS = 50
 _model = None
 
 def get_model():
+    """Lazy load the SentenceTransformer model only when needed."""
     global _model
     if _model is None:
+        from sentence_transformers import SentenceTransformer
         _model = SentenceTransformer('all-MiniLM-L6-v2')
     return _model
 
@@ -41,9 +38,8 @@ def fetch_open_library_books(query, max_results=10):
     """
     Fetches books from Open Library, checking local cache (OpenLibraryBook model) or cache dict first.
     """
-    # Simple in-memory cache for the session (optional, can be removed if DB cache is sufficient)
-    # Ideally, we should check the database first for 'similar' queries if we had a query model, 
-    # but for now we will stick to request-level caching or just hitting the API efficiently.
+    # Import models here to avoid circular imports at startup
+    from .models import OpenLibraryBook
     
     try:
         response = requests.get(f"{OPEN_LIBRARY_API_URL}?q={query}&limit={max_results}", timeout=5)
@@ -84,6 +80,11 @@ def recommend_based_on_behavior(user_id, all_books, book_embeddings):
     """
     Recommends books based on user activity using pre-calculated embeddings.
     """
+    # Import heavy libraries only when needed
+    import numpy as np
+    from sklearn.metrics.pairwise import cosine_similarity
+    from .models import UserActivity
+    
     activities = UserActivity.objects.filter(
         user_id=user_id, activity_type__in=['view', 'bookmark', 'detail_click'], book__isnull=False
     ).select_related('book')
@@ -127,6 +128,10 @@ def recommend_based_on_behavior(user_id, all_books, book_embeddings):
     return [book for book, score in scored_books[:10]]
 
 def get_hybrid_recommendations(user):
+    """Get hybrid recommendations for a user."""
+    # Import models here to avoid circular imports at startup
+    from .models import Book
+    
     # Fetch all books with embeddings
     # We filter for books that actually HAVE embeddings to avoid errors
     all_books = list(Book.objects.exclude(embedding_vector__isnull=True))

@@ -1,8 +1,4 @@
 import requests
-from transformers import pipeline
-import fitz
-from transformers import GPT2LMHeadModel, GPT2Tokenizer
-import torch
 from PyPDF2 import PdfReader
 
 # Lazy loading for summarizer - will only load when first called
@@ -12,6 +8,7 @@ def get_summarizer():
     """Lazy load the summarizer model only when needed."""
     global _summarizer
     if _summarizer is None:
+        from transformers import pipeline
         _summarizer = pipeline("summarization", model="distilgpt2")
     return _summarizer
 
@@ -33,6 +30,10 @@ def extract_text_from_pdf(pdf_path):
     return text
 
 def generate_summary(pdf_path):
+    # Import heavy libraries only when this function is called
+    from transformers import GPT2LMHeadModel, GPT2Tokenizer
+    import torch
+    
     model_name = "distilgpt2"
     model = GPT2LMHeadModel.from_pretrained(model_name)
     tokenizer = GPT2Tokenizer.from_pretrained(model_name)

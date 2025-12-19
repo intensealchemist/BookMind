@@ -4,8 +4,7 @@ from django.dispatch import receiver
 from django.db.models import Avg, UniqueConstraint
 from django.db.models.signals import post_save, post_delete
 from django.core.validators import FileExtensionValidator, MinValueValidator, MaxValueValidator
-import fitz  
-from textblob import TextBlob
+# fitz and textblob imported lazily inside functions
 from celery import shared_task
 import logging
 
@@ -14,6 +13,7 @@ logger = logging.getLogger(__name__)
 def calculate_sentiment(text):
     if not text:
         return 0  
+    from textblob import TextBlob
     return TextBlob(text).sentiment.polarity
 
 class Category(models.Model):
@@ -90,6 +90,7 @@ class Book(models.Model):
 @shared_task
 def process_pdf_content(book_id):
     try:
+        import fitz  # PyMuPDF - imported lazily
         book = Book.objects.get(id=book_id)
         content = ""
         page_count = 0

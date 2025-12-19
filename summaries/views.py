@@ -4,14 +4,14 @@ from django.contrib.auth import login,authenticate
 from django.views.generic import TemplateView
 from django.shortcuts import redirect
 from django.contrib.auth.views import LoginView
-from transformers import T5Tokenizer, T5ForConditionalGeneration
+# Heavy imports moved inside functions for lazy loading
 from .models import *
 import requests
 import json
 from .utils import *
 from django.db.models import Q,Avg
 from django.core.cache import cache
-import spacy
+# spacy imported lazily in get_nlp()
 from rest_framework.permissions import IsAuthenticated
 from rest_framework.response import Response
 from rest_framework.decorators import api_view,permission_classes
@@ -22,9 +22,9 @@ import PyPDF2
 from .forms import BookUploadForm,UserEditForm,CustomUserCreationForm,UserProfileForm
 from django.views.decorators.csrf import csrf_protect,csrf_exempt,ensure_csrf_cookie
 from django.contrib.auth.decorators import login_required, user_passes_test
-import fitz
+# fitz imported lazily where needed
 from .recommendation import *
-from textblob import TextBlob
+# textblob imported lazily in analyze_sentiment()
 from django.views.decorators.http import require_POST
 import logging
 from django.middleware.csrf import get_token
@@ -40,13 +40,8 @@ from pathlib import Path
 from django.urls import reverse
 from django.http import FileResponse
 from django.views.decorators.clickjacking import xframe_options_exempt
-from transformers import AutoTokenizer,AutoModelForSeq2SeqLM,pipeline,AutoModelForCausalLM
-from langchain_community.document_loaders import PyPDFLoader
-from langchain.chains.summarize import load_summarize_chain
-from langchain_openai import OpenAI
-from langchain.chat_models import ChatOpenAI
+# transformers, langchain imports moved inside functions that use them
 from django.conf import settings
-from transformers import LlamaForCausalLM, LlamaTokenizer,T5Tokenizer, T5ForConditionalGeneration
 from functools import lru_cache
 import re
 from django.utils.timezone import now
@@ -338,6 +333,7 @@ def get_nlp():
     return _nlp
 
 def analyze_sentiment(text):
+    from textblob import TextBlob
     blob = TextBlob(text)
     sentiment_score = blob.sentiment.polarity
     return sentiment_score
@@ -345,6 +341,7 @@ def analyze_sentiment(text):
 @api_view(['POST'])
 def sentiment_analysis_view(request, book_id):
     try:
+        from textblob import TextBlob
         book = Book.objects.get(id=book_id)
         metadata = f"{book.title} {book.author} {book.file}"
         blob = TextBlob(metadata)
