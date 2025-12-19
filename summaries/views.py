@@ -325,7 +325,17 @@ def get_book_summary(request, book_id):
     book = Book.objects.get(id=book_id)
     summary = book.summarize()  
     return JsonResponse({'summary': summary})
-nlp = spacy.load('en_core_web_sm')
+
+# Lazy loading for spaCy model
+_nlp = None
+
+def get_nlp():
+    """Lazy load the spaCy model only when needed."""
+    global _nlp
+    if _nlp is None:
+        import spacy
+        _nlp = spacy.load('en_core_web_sm')
+    return _nlp
 
 def analyze_sentiment(text):
     blob = TextBlob(text)
