@@ -1,89 +1,140 @@
+{% extends 'base.html' %}
 {% load static %}
-<!DOCTYPE html>
-<html lang="en">
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>{{ user.username }}'s Profile</title>
-    <link href="https://cdn.jsdelivr.net/npm/tailwindcss@2.2.19/dist/tailwind.min.css" rel="stylesheet">
-    <link rel="stylesheet" href="{% static 'css/user_profile.css' %}">
-</head>
-<body class="bg-gray-100">
-    <header class="bg-indigo-600 text-white py-4">
-        <div class="container mx-auto flex justify-between items-center px-4">
-            <h1 class="text-2xl font-bold">Welcome, {{ user.username}}!</h1>
-            <nav>
-                <a href="{% url 'home' %}" class="text-white hover:underline">Home</a>
-                <form method="POST" action="{% url 'logout' %}" class="inline">
-                    {% csrf_token %}
-                    <button type="submit" class="ml-4 text-white hover:underline">Logout</button>
-                </form>
-            </nav>
-        </div>
-    </header>
-    <header class="bg-white shadow">
-        <div class="max-w-4xl mx-auto p-5 flex items-center">
-            {% if profile.profile_picture %}
-                    <img src="{{ profile.profile_picture.url }}" alt="Profile Picture" class="w-16 h-16 rounded-full object-cover border">
+
+{% block title %}{{ user.username }}'s Profile{% endblock %}
+
+{% block content %}
+<div class="grid grid-cols-1 lg:grid-cols-4 gap-8">
+    <!-- Profile Sidebar -->
+    <div class="lg:col-span-1">
+        <div class="bg-gray-800 rounded-2xl border border-gray-700 p-6 sticky top-24">
+            <div class="text-center mb-6">
+                {% if profile.profile_picture %}
+                <img src="{{ profile.profile_picture.url }}" alt="Profile Picture"
+                    class="w-24 h-24 rounded-full mx-auto mb-4 border-4 border-gray-700 object-cover">
                 {% else %}
-                    <img src="{% static 'images/default_avatar.png' %}" alt="Default Profile Picture" class="w-16 h-16 rounded-full object-cover border">
+                <div
+                    class="w-24 h-24 rounded-full mx-auto mb-4 bg-gradient-to-br from-emerald-400 to-cyan-500 flex items-center justify-center text-white text-3xl font-bold">
+                    {{ user.username|make_list|first|upper }}
+                </div>
                 {% endif %}
-            <div class="ml-5">
-                <h1 class="text-2xl font-semibold text-gray-800">{{ user.username }}</h1>
-                <p class="text-gray-700">{{ user.first_name }} {{ user.last_name }}</p>
-                <p class="text-gray-600"><strong>Email:</strong> {{ user.email }}</p>
-                <div class="mt-4">
-                    <a href="{% url 'edit_profile' %}" class="bg-indigo-600 text-white py-2 px-4 rounded-lg hover:bg-indigo-700 block text-center">Edit Profile</a>
-                </div>
+                <h2 class="text-xl font-bold text-white">{{ user.username }}</h2>
+                {% if user.first_name or user.last_name %}
+                <p class="text-gray-400">{{ user.first_name }} {{ user.last_name }}</p>
+                {% endif %}
+                <p class="text-sm text-gray-500 mt-1">{{ user.email }}</p>
             </div>
-            
+
+            <a href="{% url 'edit_profile' %}"
+                class="w-full block text-center bg-gray-700 hover:bg-gray-600 text-white font-medium py-2 px-4 rounded-lg transition">
+                <i class="fa-solid fa-pen mr-2"></i>Edit Profile
+            </a>
         </div>
-    </header>
-    <main class="max-w-4xl mx-auto p-5">
-        <section class="my-6">
-            <h2 class="text-xl font-bold mb-4 text-gray-800">Your Stats</h2>
-            <div class="grid grid-cols-1 sm:grid-cols-3 gap-4">
-                <div class="bg-blue-100 p-4 rounded-lg shadow text-center">
-                    <h3 class="font-semibold text-gray-800">Books Liked</h3>
-                    <p class="text-2xl text-blue-600">{{ liked_books.count }}</p>
+    </div>
+
+    <!-- Main Content -->
+    <div class="lg:col-span-3 space-y-8">
+        <!-- Stats -->
+        <section class="grid grid-cols-2 gap-4">
+            <div class="bg-gray-800 rounded-2xl border border-gray-700 p-6 text-center">
+                <div
+                    class="w-12 h-12 mx-auto mb-3 rounded-full bg-red-500/10 flex items-center justify-center text-red-400">
+                    <i class="fa-solid fa-heart"></i>
                 </div>
-                <div class="bg-blue-100 p-4 rounded-lg shadow text-center">
-                    <h3 class="font-semibold text-gray-800">Books Bookmarked</h3>
-                    <p class="text-2xl text-blue-600">{{ bookmarks.count }}</p>
+                <p class="text-3xl font-bold text-white">{{ liked_books.count }}</p>
+                <p class="text-gray-400 text-sm">Books Liked</p>
+            </div>
+            <div class="bg-gray-800 rounded-2xl border border-gray-700 p-6 text-center">
+                <div
+                    class="w-12 h-12 mx-auto mb-3 rounded-full bg-emerald-500/10 flex items-center justify-center text-emerald-400">
+                    <i class="fa-solid fa-bookmark"></i>
                 </div>
+                <p class="text-3xl font-bold text-white">{{ bookmarks.count }}</p>
+                <p class="text-gray-400 text-sm">Books Bookmarked</p>
             </div>
         </section>
-        <section class="my-6">
-            <h2 class="text-xl font-bold mb-4 text-gray-800">Liked Books</h2>
+
+        <!-- Liked Books -->
+        <section class="bg-gray-800 rounded-2xl border border-gray-700 p-6">
+            <div class="flex items-center gap-3 mb-6">
+                <div class="p-2 bg-red-500/10 rounded-lg text-red-400">
+                    <i class="fa-solid fa-heart"></i>
+                </div>
+                <h2 class="text-xl font-bold text-white">Liked Books</h2>
+            </div>
+
             <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4">
                 {% for book in liked_books %}
-                    <div class="bg-white p-4 rounded-lg shadow">
-                        <img src="{{ book.cover_url }}" alt="Cover of {{ book.title }}" class="w-full h-48 object-cover rounded">
-                        <h3 class="mt-2 font-semibold text-lg text-gray-800">{{ book.title }}</h3>
-                        <p class="text-gray-700">by {{ book.author }}</p>
-                        <a href="{% url 'book_detail' book.id %}" class="mt-3 inline-block bg-blue-500 text-white py-2 px-4 rounded hover:bg-blue-600 transition">Read More</a>
+                <div class="bg-gray-700/50 rounded-xl overflow-hidden hover:bg-gray-700 transition">
+                    <div class="aspect-[3/4] bg-gray-900">
+                        {% if book.cover_url %}
+                        <img src="{{ book.cover_url }}" alt="{{ book.title }}" class="w-full h-full object-cover">
+                        {% else %}
+                        <div class="w-full h-full flex items-center justify-center text-gray-600">
+                            <i class="fa-solid fa-book text-3xl"></i>
+                        </div>
+                        {% endif %}
                     </div>
+                    <div class="p-4">
+                        <h3 class="font-semibold text-white line-clamp-1">{{ book.title }}</h3>
+                        <p class="text-sm text-gray-400">{{ book.author }}</p>
+                        <a href="{% url 'book_detail' book.id %}"
+                            class="inline-block mt-3 text-sm text-emerald-400 hover:text-emerald-300">
+                            View <i class="fa-solid fa-arrow-right ml-1"></i>
+                        </a>
+                    </div>
+                </div>
                 {% empty %}
-                    <p class="col-span-1 text-center text-gray-500">You haven't liked any books yet.</p>
+                <div class="col-span-full text-center py-8">
+                    <i class="fa-regular fa-heart text-4xl text-gray-600 mb-4"></i>
+                    <p class="text-gray-400">You haven't liked any books yet.</p>
+                </div>
                 {% endfor %}
             </div>
         </section>
-        <section class="my-6">
-            <h2 class="text-xl font-bold mb-4 text-gray-800">Bookmarked Books</h2>
+
+        <!-- Bookmarked Books -->
+        <section class="bg-gray-800 rounded-2xl border border-gray-700 p-6">
+            <div class="flex items-center gap-3 mb-6">
+                <div class="p-2 bg-emerald-500/10 rounded-lg text-emerald-400">
+                    <i class="fa-solid fa-bookmark"></i>
+                </div>
+                <h2 class="text-xl font-bold text-white">Bookmarked Books</h2>
+            </div>
+
             <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4">
                 {% for bookmark in bookmarks %}
-                    <div class="bg-white p-4 rounded-lg shadow">
-                        <img src="{{ bookmark.book.cover_url }}" alt="Cover of {{ bookmark.book.title }}" class="w-full h-48 object-cover rounded">
-                        <h3 class="mt-2 font-semibold text-lg text-gray-800">{{ bookmark.book.title }}</h3>
-                        <p class="text-gray-700">by {{ bookmark.book.author }}</p>
-                        <p class="text-gray-600"><strong>Location:</strong> {{ bookmark.location }}</p>
-                        <a href="{% url 'book_detail' bookmark.book.id %}" class="mt-3 inline-block bg-blue-500 text-white py-2 px-4 rounded hover:bg-blue-600 transition">Read More</a>
+                <div class="bg-gray-700/50 rounded-xl overflow-hidden hover:bg-gray-700 transition">
+                    <div class="aspect-[3/4] bg-gray-900">
+                        {% if bookmark.book.cover_url %}
+                        <img src="{{ bookmark.book.cover_url }}" alt="{{ bookmark.book.title }}"
+                            class="w-full h-full object-cover">
+                        {% else %}
+                        <div class="w-full h-full flex items-center justify-center text-gray-600">
+                            <i class="fa-solid fa-book text-3xl"></i>
+                        </div>
+                        {% endif %}
                     </div>
+                    <div class="p-4">
+                        <h3 class="font-semibold text-white line-clamp-1">{{ bookmark.book.title }}</h3>
+                        <p class="text-sm text-gray-400">{{ bookmark.book.author }}</p>
+                        <p class="text-xs text-gray-500 mt-1">
+                            <i class="fa-solid fa-location-dot mr-1"></i>{{ bookmark.location }}
+                        </p>
+                        <a href="{% url 'book_detail' bookmark.book.id %}"
+                            class="inline-block mt-3 text-sm text-emerald-400 hover:text-emerald-300">
+                            View <i class="fa-solid fa-arrow-right ml-1"></i>
+                        </a>
+                    </div>
+                </div>
                 {% empty %}
-                    <p class="col-span-1 text-center text-gray-500">You haven't bookmarked any books yet.</p>
+                <div class="col-span-full text-center py-8">
+                    <i class="fa-regular fa-bookmark text-4xl text-gray-600 mb-4"></i>
+                    <p class="text-gray-400">You haven't bookmarked any books yet.</p>
+                </div>
                 {% endfor %}
             </div>
         </section>
-    </main>
-</body>
-</html>
+    </div>
+</div>
+{% endblock %}

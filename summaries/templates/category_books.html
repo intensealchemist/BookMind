@@ -1,52 +1,76 @@
+{% extends 'base.html' %}
 {% load static %}
-<!DOCTYPE html>
-<html lang="en">
 
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Books in Category</title>
-    <link rel="stylesheet" href="{% static 'css/Category_books.css' %}">
-</head>
+{% block title %}{{ category.name }} Books{% endblock %}
 
-<body>
-    <header>
-        <h1>Books in Selected Category</h1>
-    </header>
+{% block content %}
+<div class="mb-8">
+    <a href="{% url 'home' %}" class="inline-flex items-center text-gray-400 hover:text-white transition mb-4">
+        <i class="fa-solid fa-arrow-left mr-2"></i>
+        Back to Home
+    </a>
+    <h1 class="text-3xl font-bold text-white mb-2">{{ category.name }}</h1>
+    <p class="text-gray-400">Explore books in this category</p>
+</div>
 
-    <main>
-        {% if book_list %}
-        <ul class="book-list">
-            {% for book in book_list %}
-            <li class="book-item">
-                <h2 class="book-title">
-                    <a href="{% url 'api_book_detail' book.key %}">{{ book.title }}</a>
-                </h2>
-                <p class="book-author">by {{ book.author }}</p>
-                {% if book.cover_url %}
-                <img src="{{ book.cover_url }}" alt="Cover of {{ book.title }}" class="book-cover">
-                {% else %}
-                <p>No cover available.</p>
-                {% endif %}
+{% if book_list %}
+<div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-6">
+    {% for book in book_list %}
+    <div
+        class="group bg-gray-800 rounded-2xl overflow-hidden border border-gray-700 hover:border-emerald-500/50 hover:shadow-2xl hover:shadow-emerald-500/10 transition-all duration-300">
+        <!-- Cover Image -->
+        <div class="aspect-[2/3] overflow-hidden bg-gray-900 relative">
+            {% if book.cover_url %}
+            <img src="{{ book.cover_url }}" alt="{{ book.title }}"
+                class="w-full h-full object-cover transform group-hover:scale-105 transition duration-500">
+            {% else %}
+            <div class="w-full h-full flex items-center justify-center text-gray-600">
+                <i class="fa-solid fa-book text-4xl"></i>
+            </div>
+            {% endif %}
+
+            <!-- Hover Overlay -->
+            <div
+                class="absolute inset-0 bg-black/60 opacity-0 group-hover:opacity-100 transition-opacity duration-300 flex items-center justify-center gap-3">
+                <a href="{% url 'api_book_detail' book.key %}"
+                    class="px-4 py-2 bg-white text-gray-900 rounded-full text-sm font-bold hover:bg-emerald-50 transition transform hover:scale-105">
+                    View Details
+                </a>
+            </div>
+        </div>
+
+        <!-- Content -->
+        <div class="p-5">
+            <h3 class="text-lg font-bold text-white mb-1 line-clamp-1 group-hover:text-emerald-400 transition-colors">
+                {{ book.title }}
+            </h3>
+            <p class="text-sm text-gray-400 mb-3">{{ book.author }}</p>
+
+            <div class="flex gap-2">
                 {% if book.read_url %}
-                <a href="{{ book.read_url }}" target="_blank" class="book-link">Read Now</a>
-                {% else %}
-                <p>Not available for reading.</p>
+                <a href="{{ book.read_url }}" target="_blank"
+                    class="text-xs px-3 py-1 bg-emerald-600 text-white rounded-full hover:bg-emerald-500 transition">
+                    Read Now
+                </a>
                 {% endif %}
                 {% if book.url %}
-                <a href="{{ book.url }}" target="_blank" class="book-link">View more details</a>
+                <a href="{{ book.url }}" target="_blank"
+                    class="text-xs px-3 py-1 bg-gray-700 text-gray-300 rounded-full hover:bg-gray-600 transition">
+                    More Info
+                </a>
                 {% endif %}
-            </li>
-            {% endfor %}
-        </ul>
-        {% else %}
-        <p class="no-books">No books found in this category. Please try another category.</p>
-        {% endif %}
-    </main>
-
-    <footer>
-        <p>&copy; 2024 AI-powered BookMind and Recommendation. All rights reserved.</p>
-    </footer>
-</body>
-
-</html>
+            </div>
+        </div>
+    </div>
+    {% endfor %}
+</div>
+{% else %}
+<div class="text-center py-16">
+    <i class="fa-solid fa-folder-open text-5xl text-gray-600 mb-4"></i>
+    <p class="text-gray-400 text-lg">No books found in this category.</p>
+    <a href="{% url 'home' %}" class="inline-block mt-4 text-emerald-400 hover:text-emerald-300">
+        Browse other categories <i class="fa-solid fa-arrow-right ml-1"></i>
+    </a>
+</div>
+{% endif %}
+{% endblock %}

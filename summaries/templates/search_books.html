@@ -1,66 +1,129 @@
+{% extends 'base.html' %}
 {% load static %}
-<!DOCTYPE html>
-<html lang="en">
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Search Books</title>
-    <link rel="stylesheet" href="{% static 'css/search_books.css' %}">
-</head>
-<body>
-    <div class="container">
-        <h1>Search for Books</h1>
 
-        <!-- Search Form -->
-        <form method="GET" action="{% url 'search_books' %}" class="search-form">
-            <input type="text" name="q" placeholder="Enter book title..." value="{{ query }}" class="search-input">
-            <button type="submit" class="search-button">Search</button>
-        </form>
+{% block title %}Search Books{% endblock %}
 
-        {% if query %}
-            <!-- Local Results Section -->
-            <h2>Local Results:</h2>
-            {% if local_results %}
-                <ul class="results-list">
-                    {% for book in local_results %}
-                        <li class="result-item">
-                            <a href="{% url 'view_pdf' book.id %}" class="book-link">
-                                {{ book.title }} by {{ book.author }}
-                            </a>
-                        </li>
-                    {% endfor %}
-                </ul>
-            {% else %}
-                <p class="no-results">No local results found for "{{ query }}".</p>
-            {% endif %}
-
-            <!-- API Results Section -->
-            <h2>Open Library Results:</h2>
-            {% if api_results %}
-                <ul class="results-list">
-                    {% for book in api_results %}
-            <li class="result-item">
-                <a href="{% url 'api_book_detail' book.key %}" onclick="logDetailClick('{{ book.key }}')">{{ book.title }}</a> by {{ book.author }}<br>
-                {% if book.cover_url %}
-                    <img src="{{ book.cover_url }}" alt="Cover for {{ book.title }}" class="book-cover">
-                {% endif %}
-                <br>
-                {% if book.read_link %}
-                    <a href="{{ book.read_link }}" target="_blank" class="read-link">Read Online</a>
-                {% else %}
-                    <span class="no-read-link">Not available for reading</span>
-                {% endif %}
-            </li>
-        {% endfor %}
-                </ul>
-            {% else %}
-                <p class="no-results">No Open Library results found for "{{ query }}".</p>
-            {% endif %}
-        {% else %}
-            <p class="instructions">Enter a book title to search.</p>
-        {% endif %}
+{% block content %}
+<div class="max-w-4xl mx-auto">
+    <div class="text-center mb-12">
+        <h1 class="text-4xl font-bold text-white mb-4">Search for Books</h1>
+        <p class="text-gray-400">Find your next favorite read from our library and Open Library</p>
     </div>
-    <script>
+
+    <!-- Search Form -->
+    <form method="GET" action="{% url 'search_books' %}" class="mb-12">
+        <div class="flex gap-4">
+            <div class="flex-grow relative">
+                <div class="absolute inset-y-0 left-0 pl-4 flex items-center pointer-events-none">
+                    <i class="fa-solid fa-search text-gray-400"></i>
+                </div>
+                <input type="text" name="q" placeholder="Enter book title, author, or keyword..." value="{{ query }}"
+                    class="w-full pl-12 pr-4 py-4 bg-gray-800 border border-gray-700 rounded-xl text-white placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-emerald-500 focus:border-transparent transition text-lg">
+            </div>
+            <button type="submit"
+                class="px-8 py-4 bg-emerald-600 hover:bg-emerald-500 text-white font-semibold rounded-xl shadow-lg shadow-emerald-600/20 transition-all transform hover:-translate-y-0.5">
+                Search
+            </button>
+        </div>
+    </form>
+
+    {% if query %}
+    <!-- Local Results Section -->
+    <section class="mb-12">
+        <div class="flex items-center gap-3 mb-6">
+            <div class="p-2 bg-blue-500/10 rounded-lg text-blue-400">
+                <i class="fa-solid fa-database"></i>
+            </div>
+            <h2 class="text-xl font-bold text-white">Local Library Results</h2>
+        </div>
+
+        {% if local_results %}
+        <div class="grid gap-4">
+            {% for book in local_results %}
+            <a href="{% url 'view_pdf' book.id %}"
+                class="block p-4 bg-gray-800 border border-gray-700 rounded-xl hover:border-emerald-500/50 hover:bg-gray-750 transition-all">
+                <div class="flex items-center gap-4">
+                    <div class="w-12 h-16 bg-gray-700 rounded-lg flex items-center justify-center text-gray-500">
+                        <i class="fa-solid fa-book"></i>
+                    </div>
+                    <div>
+                        <h3 class="text-lg font-semibold text-white">{{ book.title }}</h3>
+                        <p class="text-gray-400">by {{ book.author }}</p>
+                    </div>
+                </div>
+            </a>
+            {% endfor %}
+        </div>
+        {% else %}
+        <div class="p-6 bg-gray-800/50 border border-gray-700 rounded-xl text-center">
+            <p class="text-gray-400">No local results found for "{{ query }}".</p>
+        </div>
+        {% endif %}
+    </section>
+
+    <!-- Open Library Results Section -->
+    <section>
+        <div class="flex items-center gap-3 mb-6">
+            <div class="p-2 bg-emerald-500/10 rounded-lg text-emerald-400">
+                <i class="fa-solid fa-globe"></i>
+            </div>
+            <h2 class="text-xl font-bold text-white">Open Library Results</h2>
+        </div>
+
+        {% if api_results %}
+        <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+            {% for book in api_results %}
+            <div
+                class="bg-gray-800 border border-gray-700 rounded-xl overflow-hidden hover:border-emerald-500/50 transition-all">
+                <div class="flex gap-4 p-4">
+                    {% if book.cover_url %}
+                    <img src="{{ book.cover_url }}" alt="Cover for {{ book.title }}"
+                        class="w-20 h-28 object-cover rounded-lg flex-shrink-0">
+                    {% else %}
+                    <div class="w-20 h-28 bg-gray-700 rounded-lg flex items-center justify-center text-gray-500">
+                        <i class="fa-solid fa-book-open"></i>
+                    </div>
+                    {% endif %}
+                    <div class="flex flex-col justify-between">
+                        <div>
+                            <a href="{% url 'api_book_detail' book.key %}" onclick="logDetailClick('{{ book.key }}')"
+                                class="text-lg font-semibold text-white hover:text-emerald-400 transition">
+                                {{ book.title }}
+                            </a>
+                            <p class="text-gray-400 text-sm">by {{ book.author }}</p>
+                        </div>
+                        <div class="flex gap-2 mt-2">
+                            {% if book.read_link %}
+                            <a href="{{ book.read_link }}" target="_blank"
+                                class="text-xs px-3 py-1 bg-emerald-600 text-white rounded-full hover:bg-emerald-500 transition">
+                                Read Online
+                            </a>
+                            {% else %}
+                            <span class="text-xs px-3 py-1 bg-gray-700 text-gray-400 rounded-full">
+                                Not available online
+                            </span>
+                            {% endif %}
+                        </div>
+                    </div>
+                </div>
+            </div>
+            {% endfor %}
+        </div>
+        {% else %}
+        <div class="p-6 bg-gray-800/50 border border-gray-700 rounded-xl text-center">
+            <p class="text-gray-400">No Open Library results found for "{{ query }}".</p>
+        </div>
+        {% endif %}
+    </section>
+    {% else %}
+    <div class="text-center p-12 bg-gray-800/50 border border-gray-700 rounded-xl">
+        <i class="fa-solid fa-search text-4xl text-gray-500 mb-4"></i>
+        <p class="text-gray-400">Enter a book title to start searching.</p>
+    </div>
+    {% endif %}
+</div>
+
+<script>
     function logDetailClick(openLibraryKey) {
         fetch('/api/log_activity/', {
             method: 'POST',
@@ -74,6 +137,5 @@
             })
         });
     }
-    </script>
-</body>
-</html>
+</script>
+{% endblock %}

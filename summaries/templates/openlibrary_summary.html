@@ -1,39 +1,38 @@
-<!DOCTYPE html>
-<html lang="en">
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Book Summary</title>
-    <style>
-        body {
-            font-family: Arial, sans-serif;
-            margin: 20px;
-            padding: 0;
-        }
-        .summary-container {
-            max-width: 600px;
-            margin: 0 auto;
-            border: 1px solid #ddd;
-            padding: 20px;
-            border-radius: 8px;
-            box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
-        }
-        h1 {
-            font-size: 24px;
-            color: #333;
-        }
-        p {
-            font-size: 16px;
-            line-height: 1.5;
-            color: #555;
-        }
-    </style>
-</head>
-<body>
-    <div class="summary-container">
-        <h1>{{ title }}</h1>
-        <p><strong>Description:</strong> {{ description }}</p>
-        <p><strong>Summary:</strong> {{ summary }}</p>
+{% extends 'base.html' %}
+
+{% block title %}{{ title }} - Summary{% endblock %}
+
+{% block content %}
+<div class="max-w-2xl mx-auto">
+    <a href="javascript:history.back()" class="inline-flex items-center text-gray-400 hover:text-white transition mb-6">
+        <i class="fa-solid fa-arrow-left mr-2"></i>
+        Go Back
+    </a>
+
+    <div class="bg-gray-800 rounded-2xl border border-gray-700 p-8">
+        <h1 class="text-2xl font-bold text-white mb-6">{{ title }}</h1>
+
+        {% if description %}
+        <div class="mb-6">
+            <h2 class="text-sm font-medium text-gray-400 uppercase tracking-wider mb-2">Description</h2>
+            <p class="text-gray-300 leading-relaxed">{{ description }}</p>
+        </div>
+        {% endif %}
+
+        {% if summary %}
+        <div class="bg-emerald-500/10 border border-emerald-500/20 rounded-xl p-6">
+            <div class="flex items-center gap-2 mb-3">
+                <i class="fa-solid fa-wand-magic-sparkles text-emerald-400"></i>
+                <h2 class="text-sm font-medium text-emerald-400 uppercase tracking-wider">AI Summary</h2>
+            </div>
+            <p class="text-gray-300 leading-relaxed">{{ summary }}</p>
+        </div>
+        {% else %}
+        <div class="text-center py-8">
+            <i class="fa-solid fa-file-circle-question text-4xl text-gray-600 mb-4"></i>
+            <p class="text-gray-400">No summary available for this book.</p>
+        </div>
+        {% endif %}
     </div>
-</body>
-</html>
+</div>
+{% endblock %}

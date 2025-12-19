@@ -1,18 +1,34 @@
+{% extends 'base.html' %}
 {% load static %}
-<!DOCTYPE html>
-<html lang="en">
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Summary Result</title>
-</head>
-<body>
-    <h1>Summary for {{ book.title }}</h1>
-    <p><strong>Author:</strong> {{ book.author }}</p>
-    <hr>
-    <h2>Generated Summary:</h2>
-    <p>{{ new_summary }}</p>
-    <hr>
-    <a href="{% url 'book_detail' book.id %}">Back to Book Details</a>
-</body>
-</html>
+
+{% block title %}{{ book.title }} - Summary{% endblock %}
+
+{% block content %}
+<div class="max-w-2xl mx-auto">
+    <a href="{% url 'book_detail' book.id %}"
+        class="inline-flex items-center text-gray-400 hover:text-white transition mb-6">
+        <i class="fa-solid fa-arrow-left mr-2"></i>
+        Back to Book Details
+    </a>
+
+    <div class="bg-gray-800 rounded-2xl border border-gray-700 p-8">
+        <h1 class="text-2xl font-bold text-white mb-2">{{ book.title }}</h1>
+        <p class="text-gray-400 mb-6">by {{ book.author }}</p>
+
+        <div class="bg-emerald-500/10 border border-emerald-500/20 rounded-xl p-6">
+            <div class="flex items-center gap-2 mb-4">
+                <i class="fa-solid fa-wand-magic-sparkles text-emerald-400"></i>
+                <h2 class="text-lg font-bold text-emerald-400">AI-Generated Summary</h2>
+            </div>
+            <p class="text-gray-300 leading-relaxed">{{ new_summary }}</p>
+        </div>
+
+        <div class="mt-6 flex gap-4">
+            <a href="{% url 'book_detail' book.id %}"
+                class="flex-1 text-center bg-gray-700 hover:bg-gray-600 text-white font-medium py-3 px-4 rounded-lg transition">
+                <i class="fa-solid fa-book mr-2"></i>View Book
+            </a>
+        </div>
+    </div>
+</div>
+{% endblock %}

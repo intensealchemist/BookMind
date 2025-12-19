@@ -1,15 +1,43 @@
-<form method="POST" action="{% url 'submit_review' book.id %}">
-    {% csrf_token %}
-    <label for="star_rating">Rate this book:</label>
-    <select name="star_rating" id="star_rating">
-        <option value="1">1 Star</option>
-        <option value="2">2 Stars</option>
-        <option value="3" selected>3 Stars</option>
-        <option value="4">4 Stars</option>
-        <option value="5">5 Stars</option>
-    </select>
-    <textarea name="review_text" placeholder="Write your review here..."></textarea>
-    <button type="submit">Submit Review</button>
-    <p>Average Rating: {{ book.reviews.aggregate(avg_rating=Avg('star_rating'))['avg_rating']|default:"No ratings yet" }}</p>
+{% extends 'base.html' %}
 
-</form>
+{% block title %}Write a Review{% endblock %}
+
+{% block content %}
+<div class="max-w-xl mx-auto">
+    <div class="text-center mb-8">
+        <h1 class="text-3xl font-bold text-white mb-2">Write a Review</h1>
+        <p class="text-gray-400">Share your thoughts about "{{ book.title }}"</p>
+    </div>
+
+    <div class="bg-gray-800 rounded-2xl border border-gray-700 p-8">
+        <form method="POST" action="{% url 'submit_review' book.id %}" class="space-y-6">
+            {% csrf_token %}
+
+            <div>
+                <label for="star_rating" class="block text-sm font-medium text-gray-300 mb-3">Rating</label>
+                <div class="flex gap-2">
+                    {% for i in "12345" %}
+                    <label class="cursor-pointer">
+                        <input type="radio" name="star_rating" value="{{ forloop.counter }}" {% if forloop.counter==3
+                            %}checked{% endif %} class="hidden peer">
+                        <i
+                            class="fa-star text-3xl text-gray-500 peer-checked:text-yellow-400 hover:text-yellow-400 transition fa-regular peer-checked:fa-solid"></i>
+                    </label>
+                    {% endfor %}
+                </div>
+            </div>
+
+            <div>
+                <label for="review_text" class="block text-sm font-medium text-gray-300 mb-2">Your Review</label>
+                <textarea name="review_text" id="review_text" rows="5" placeholder="What did you think of this book?"
+                    class="w-full px-4 py-3 bg-gray-700 border border-gray-600 rounded-lg text-white placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-emerald-500 focus:border-transparent transition"></textarea>
+            </div>
+
+            <button type="submit"
+                class="w-full bg-emerald-600 hover:bg-emerald-500 text-white font-semibold py-3 px-4 rounded-lg shadow-lg shadow-emerald-600/20 transition-all transform hover:-translate-y-0.5">
+                Submit Review
+            </button>
+        </form>
+    </div>
+</div>
+{% endblock %}

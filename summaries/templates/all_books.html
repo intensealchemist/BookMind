@@ -1,20 +1,53 @@
+{% extends 'base.html' %}
 {% load static %}
-<!DOCTYPE html>
-<html>
-<head>
-    <title>All Books</title>
-    <link rel="stylesheet" type="text/css" href="{% static 'css/all_books.css' %}">
-</head>
-<body>
-    <h1>All Books</h1>
-    <div class="books-container">
-        {% for book in books %}
-        <div class="book-card">
-            <h2>{{ book.title }}</h2>
-            <p><strong>Author:</strong> {{ book.author }}</p>
-            <p class="description">{{ book.description|default:"No description available." }}</p>
+
+{% block title %}All Books{% endblock %}
+
+{% block content %}
+<div class="mb-8">
+    <h1 class="text-3xl font-bold text-white mb-2">All Books</h1>
+    <p class="text-gray-400">Browse our complete collection</p>
+</div>
+
+<div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-6">
+    {% for book in books %}
+    <div
+        class="group bg-gray-800 rounded-2xl overflow-hidden border border-gray-700 hover:border-emerald-500/50 hover:shadow-2xl hover:shadow-emerald-500/10 transition-all duration-300">
+        <!-- Cover Image -->
+        <div class="aspect-[2/3] overflow-hidden bg-gray-900 relative">
+            {% if book.cover_url %}
+            <img src="{{ book.cover_url }}" alt="{{ book.title }}"
+                class="w-full h-full object-cover transform group-hover:scale-105 transition duration-500">
+            {% else %}
+            <div class="w-full h-full flex items-center justify-center text-gray-600">
+                <i class="fa-solid fa-book text-4xl"></i>
+            </div>
+            {% endif %}
+
+            <!-- Hover Overlay -->
+            <div
+                class="absolute inset-0 bg-black/60 opacity-0 group-hover:opacity-100 transition-opacity duration-300 flex items-center justify-center gap-3">
+                <a href="{% url 'book_detail' book.id %}"
+                    class="px-4 py-2 bg-white text-gray-900 rounded-full text-sm font-bold hover:bg-emerald-50 transition transform hover:scale-105">
+                    View Details
+                </a>
+            </div>
         </div>
-        {% endfor %}
+
+        <!-- Content -->
+        <div class="p-5">
+            <h3 class="text-lg font-bold text-white mb-1 line-clamp-1 group-hover:text-emerald-400 transition-colors">
+                {{ book.title }}
+            </h3>
+            <p class="text-sm text-gray-400 mb-3">{{ book.author }}</p>
+            <p class="text-xs text-gray-500 line-clamp-2">{{ book.description|default:"No description available." }}</p>
+        </div>
     </div>
-</body>
-</html>
+    {% empty %}
+    <div class="col-span-full text-center py-12">
+        <i class="fa-solid fa-book-open text-4xl text-gray-600 mb-4"></i>
+        <p class="text-gray-400">No books found in the library yet.</p>
+    </div>
+    {% endfor %}
+</div>
+{% endblock %}

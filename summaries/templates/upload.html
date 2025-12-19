@@ -1,23 +1,32 @@
-<form action="" method="post" enctype="multipart/form-data">
-    {% csrf_token %}
-    <input type="file" name="pdf">
-    <button type="submit">Summarize</button>
-</form>
+{% extends 'base.html' %}
 
+{% block title %}Upload PDF{% endblock %}
 
+{% block content %}
+<div class="max-w-xl mx-auto">
+    <div class="text-center mb-8">
+        <h1 class="text-3xl font-bold text-white mb-2">Upload PDF</h1>
+        <p class="text-gray-400">Upload a PDF to get an AI-powered summary</p>
+    </div>
 
-from summaries.models import Book
+    <div class="bg-gray-800 rounded-2xl border border-gray-700 p-8">
+        <form action="" method="post" enctype="multipart/form-data" class="space-y-6">
+            {% csrf_token %}
 
-for book in Book.objects.all():
-    if book.file:  # If file is not null
-        # Print current path for debugging
-        print(f"Before: {book.file.path}")
-        
-        # Correct the path if it contains the duplicated 'pdfs/pdfs'
-        if 'pdfs/pdfs/' in book.file.name:
-            corrected_path = book.file.name.replace('pdfs/pdfs/', 'pdfs/')
-            book.file = corrected_path
-            book.save()
+            <div
+                class="border-2 border-dashed border-gray-600 rounded-xl p-8 text-center hover:border-emerald-500 transition-colors">
+                <i class="fa-solid fa-file-pdf text-4xl text-gray-500 mb-4"></i>
+                <p class="text-gray-400 mb-3">Drag and drop your PDF here or click to browse</p>
+                <input type="file" name="pdf" accept=".pdf"
+                    class="block w-full text-sm text-gray-400 file:mr-4 file:py-2 file:px-4 file:rounded-full file:border-0 file:text-sm file:font-semibold file:bg-emerald-600 file:text-white hover:file:bg-emerald-500 file:cursor-pointer cursor-pointer">
+            </div>
 
-        # Print updated path for confirmation
-        print(f"After: {book.file.path}")
+            <button type="submit"
+                class="w-full bg-emerald-600 hover:bg-emerald-500 text-white font-semibold py-3 px-4 rounded-lg shadow-lg shadow-emerald-600/20 transition-all transform hover:-translate-y-0.5">
+                <i class="fa-solid fa-wand-magic-sparkles mr-2"></i>
+                Summarize PDF
+            </button>
+        </form>
+    </div>
+</div>
+{% endblock %}

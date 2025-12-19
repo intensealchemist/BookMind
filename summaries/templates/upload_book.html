@@ -1,22 +1,62 @@
-<!-- upload_book.html -->
-<!DOCTYPE html>
-<html lang="en">
-<head>
-    <meta charset="UTF-8">
-    <title>Upload Book</title>
-</head>
-<body>
-    <h2>Upload Book</h2>
-    <form method="post" enctype="multipart/form-data" id="uploadForm">
-        {% csrf_token %}
-        {{ form.as_p }}
-        <button type="submit">Upload</button>
-    </form>
-    <p id="message"></p>
-    <script>
-        document.getElementById('uploadForm').onsubmit = async function(event) {
-            event.preventDefault();
-            const formData = new FormData(this);
+{% extends 'base.html' %}
+
+{% block title %}Upload Book{% endblock %}
+
+{% block content %}
+<div class="max-w-xl mx-auto">
+    <div class="text-center mb-8">
+        <h1 class="text-3xl font-bold text-white mb-2">Upload a Book</h1>
+        <p class="text-gray-400">Add a new book to your collection</p>
+    </div>
+
+    <div class="bg-gray-800 rounded-2xl border border-gray-700 shadow-xl p-8">
+        <form method="post" enctype="multipart/form-data" id="uploadForm" class="space-y-6">
+            {% csrf_token %}
+
+            {% for field in form %}
+            <div>
+                <label for="{{ field.id_for_label }}" class="block text-sm font-medium text-gray-300 mb-2">
+                    {{ field.label }}
+                </label>
+                {% if field.field.widget.input_type == 'file' %}
+                <div
+                    class="border-2 border-dashed border-gray-600 rounded-lg p-6 text-center hover:border-emerald-500 transition-colors">
+                    <i class="fa-solid fa-cloud-upload-alt text-3xl text-gray-500 mb-3"></i>
+                    <p class="text-gray-400 mb-2">Click to select a file or drag and drop</p>
+                    {{ field }}
+                </div>
+                {% else %}
+                <input type="{{ field.field.widget.input_type|default:'text' }}" name="{{ field.name }}"
+                    id="{{ field.id_for_label }}"
+                    class="w-full px-4 py-3 bg-gray-700 border border-gray-600 rounded-lg text-white placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-emerald-500 focus:border-transparent transition"
+                    {% if field.value %}value="{{ field.value }}" {% endif %}>
+                {% endif %}
+                {% for error in field.errors %}
+                <p class="text-red-400 text-sm mt-1">{{ error }}</p>
+                {% endfor %}
+            </div>
+            {% endfor %}
+
+            <button type="submit"
+                class="w-full bg-emerald-600 hover:bg-emerald-500 text-white font-semibold py-3 px-4 rounded-lg shadow-lg shadow-emerald-600/20 transition-all transform hover:-translate-y-0.5">
+                <i class="fa-solid fa-upload mr-2"></i>
+                Upload Book
+            </button>
+        </form>
+
+        <p id="message" class="mt-4 text-center text-gray-400"></p>
+    </div>
+</div>
+
+<script>
+    document.getElementById('uploadForm').onsubmit = async function (event) {
+        event.preventDefault();
+        const formData = new FormData(this);
+        const messageEl = document.getElementById('message');
+        messageEl.textContent = 'Uploading...';
+        messageEl.className = 'mt-4 text-center text-gray-400';
+
+        try {
             const response = await fetch("{% url 'upload_book' %}", {
                 method: 'POST',
                 body: formData,
@@ -25,8 +65,18 @@
                 }
             });
             const result = await response.json();
-            document.getElementById('message').innerText = result.message || result.error;
-        };
-    </script>
-</body>
-</html>
+
+            if (result.message) {
+                messageEl.textContent = result.message;
+                messageEl.className = 'mt-4 text-center text-emerald-400';
+            } else if (result.error) {
+                messageEl.textContent = result.error;
+                messageEl.className = 'mt-4 text-center text-red-400';
+            }
+        } catch (error) {
+            messageEl.textContent = 'Upload failed. Please try again.';
+            messageEl.className = 'mt-4 text-center text-red-400';
+        }
+    };
+</script>
+{% endblock %}

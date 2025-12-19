@@ -1,26 +1,61 @@
-<!-- progress_tracker.html -->
-<!DOCTYPE html>
-<html lang="en">
-<head>
-    <meta charset="UTF-8">
-    <title>Your Progress</title>
-</head>
-<body>
-    <div class="progress-tracker-section">
-        <h2>Your Progress</h2>
-        {% if books %}
-            <ul>
-                {% for book in books %}
-                    <li>
-                        <h3>{{ book.title }}</h3>
-                        <p>{{ book.author }}</p>
-                        <p>Status: {{ book.get_status_display }}</p>
-                    </li>
-                {% endfor %}
-            </ul>
-        {% else %}
-            <p>No books found.</p>
-        {% endif %}
+{% extends 'base.html' %}
+
+{% block title %}Your Progress{% endblock %}
+
+{% block content %}
+<div class="mb-8">
+    <h1 class="text-3xl font-bold text-white mb-2">Your Reading Progress</h1>
+    <p class="text-gray-400">Track your book reading journey</p>
+</div>
+
+{% if books %}
+<div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+    {% for book in books %}
+    <div class="bg-gray-800 rounded-2xl border border-gray-700 p-6 hover:border-gray-600 transition">
+        <div class="flex items-start gap-4">
+            {% if book.cover_url %}
+            <img src="{{ book.cover_url }}" alt="{{ book.title }}"
+                class="w-16 h-24 object-cover rounded-lg flex-shrink-0">
+            {% else %}
+            <div class="w-16 h-24 bg-gray-700 rounded-lg flex items-center justify-center text-gray-500 flex-shrink-0">
+                <i class="fa-solid fa-book"></i>
+            </div>
+            {% endif %}
+            <div class="flex-1">
+                <h3 class="font-bold text-white mb-1">{{ book.title }}</h3>
+                <p class="text-sm text-gray-400 mb-3">{{ book.author }}</p>
+
+                <!-- Status Badge -->
+                <span class="inline-flex items-center gap-1 px-3 py-1 rounded-full text-xs font-medium
+                    {% if book.status == 'completed' %}
+                    bg-emerald-500/10 text-emerald-400
+                    {% elif book.status == 'in_progress' %}
+                    bg-blue-500/10 text-blue-400
+                    {% else %}
+                    bg-gray-700 text-gray-400
+                    {% endif %}">
+                    {% if book.status == 'completed' %}
+                    <i class="fa-solid fa-check"></i>
+                    {% elif book.status == 'in_progress' %}
+                    <i class="fa-solid fa-book-open"></i>
+                    {% else %}
+                    <i class="fa-solid fa-clock"></i>
+                    {% endif %}
+                    {{ book.get_status_display }}
+                </span>
+            </div>
+        </div>
     </div>
-</body>
-</html>
+    {% endfor %}
+</div>
+{% else %}
+<div class="text-center py-16 bg-gray-800 rounded-2xl border border-gray-700">
+    <i class="fa-solid fa-book-open text-5xl text-gray-600 mb-4"></i>
+    <p class="text-gray-400 text-lg mb-4">You haven't started tracking any books yet.</p>
+    <a href="{% url 'search_books' %}"
+        class="inline-flex items-center text-emerald-400 hover:text-emerald-300 font-medium">
+        Browse Books <i class="fa-solid fa-arrow-right ml-2"></i>
+    </a>
+</div>
+{% endif %}
+{% endblock %}

@@ -1,81 +1,59 @@
-<!DOCTYPE html>
-<html lang="en">
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Register</title>
-    <script src="https://cdn.tailwindcss.com"></script>
-    <style>
-        .instructions {
-            display: none;
-            font-size: 0.875rem;
-            color: #6b7280; /* Tailwind gray-500 */
-        }
-    </style>
-    <script>
-        function toggleInstructions(field) {
-            const instructions = document.getElementById(`${field}-instructions`);
-            if (instructions.style.display === "none") {
-                instructions.style.display = "block";
-            } else {
-                instructions.style.display = "none";
-            }
-        }
+{% extends 'base.html' %}
 
-        function togglePasswordVisibility(fieldId, toggleBtnId) {
-            const passwordField = document.getElementById(fieldId);
-            const toggleButton = document.getElementById(toggleBtnId);
-            if (passwordField.type === "password") {
-                passwordField.type = "text";
-                toggleButton.textContent = "Hide Password";
-            } else {
-                passwordField.type = "password";
-                toggleButton.textContent = "Show Password";
-            }
-        }
-    </script>
-</head>
-<body class="bg-gray-100 min-h-screen flex items-center justify-center">
-    <div class="w-full max-w-md bg-white rounded-lg shadow-md p-6">
-        <h2 class="text-2xl font-semibold text-center text-gray-700 mb-6">Create an Account</h2>
-        <form action="{% url 'register' %}" method="post" enctype="multipart/form-data" class="space-y-4">
+{% block title %}Register{% endblock %}
+
+{% block content %}
+<div class="max-w-md mx-auto">
+    <div class="bg-gray-800 rounded-2xl border border-gray-700 shadow-xl p-8">
+        <div class="text-center mb-8">
+            <div
+                class="w-16 h-16 mx-auto rounded-full bg-gradient-to-br from-emerald-400 to-cyan-500 flex items-center justify-center text-white text-2xl font-bold shadow-lg shadow-emerald-500/20 mb-4">
+                <i class="fa-solid fa-user-plus"></i>
+            </div>
+            <h2 class="text-2xl font-bold text-white">Create an Account</h2>
+            <p class="text-gray-400 mt-2">Join BookMind and start exploring</p>
+        </div>
+
+        <form action="{% url 'register' %}" method="post" enctype="multipart/form-data" class="space-y-5">
             {% csrf_token %}
+
             {% for field in form %}
             <div>
-                <label for="{{ field.id_for_label }}" class="block font-medium text-gray-700">
-                    {{ field.label }}:
+                <label for="{{ field.id_for_label }}" class="block text-sm font-medium text-gray-300 mb-2">
+                    {{ field.label }}
                 </label>
-                {{ field }}
-                {% if field.help_text %}
-                <button 
-                    type="button" 
-                    onclick="toggleInstructions('{{ field.name }}')" 
-                    class="text-blue-500 text-sm underline mt-1"
-                >
-                    Show Instructions
-                </button>
-                <div id="{{ field.name }}-instructions" class="instructions">
-                    {{ field.help_text }}
+                {% if field.field.widget.input_type == 'checkbox' %}
+                <div class="flex items-center">
+                    {{ field }}
+                    <span class="ml-2 text-sm text-gray-400">{{ field.help_text }}</span>
                 </div>
+                {% else %}
+                <input type="{{ field.field.widget.input_type|default:'text' }}" name="{{ field.name }}"
+                    id="{{ field.id_for_label }}"
+                    class="w-full px-4 py-3 bg-gray-700 border border-gray-600 rounded-lg text-white placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-emerald-500 focus:border-transparent transition"
+                    {% if field.value %}value="{{ field.value }}" {% endif %}>
+                {% if field.help_text %}
+                <p class="text-gray-500 text-xs mt-1">{{ field.help_text|safe }}</p>
+                {% endif %}
                 {% endif %}
                 {% for error in field.errors %}
-                <p class="text-red-500 text-sm mt-1">{{ error }}</p>
+                <p class="text-red-400 text-sm mt-1">{{ error }}</p>
                 {% endfor %}
             </div>
             {% endfor %}
-            <div>
-                <button
-                    type="submit"
-                    class="w-full bg-blue-500 text-white py-2 px-4 rounded-lg hover:bg-blue-600 transition duration-200"
-                >
-                    Register
-                </button>
-            </div>
+
+            <button type="submit"
+                class="w-full bg-emerald-600 hover:bg-emerald-500 text-white font-semibold py-3 px-4 rounded-lg shadow-lg shadow-emerald-600/20 transition-all transform hover:-translate-y-0.5">
+                Create Account
+            </button>
         </form>
-        <p class="mt-4 text-sm text-gray-500 text-center">
-            Already have an account? 
-            <a href="{% url 'login' %}" class="text-blue-500 hover:underline">Login</a>
-        </p>
+
+        <div class="mt-6 text-center">
+            <p class="text-gray-400 text-sm">
+                Already have an account?
+                <a href="{% url 'login' %}" class="text-emerald-400 hover:text-emerald-300 font-medium">Sign in</a>
+            </p>
+        </div>
     </div>
-</body>
-</html>
+</div>
+{% endblock %}
