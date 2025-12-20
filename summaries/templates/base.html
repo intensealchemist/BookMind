@@ -1,16 +1,17 @@
 {% load static %}
 <!DOCTYPE html>
 <html lang="en" class="scroll-smooth">
+
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>{% block title %}BookMind{% endblock %} | Intelligent Book Summaries</title>
-    
+
     <!-- Fonts -->
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
-    
+
     <!-- Tailwind CSS -->
     <script src="https://cdn.tailwindcss.com"></script>
     <script>
@@ -41,14 +42,16 @@
 
     <!-- Icons -->
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
-    
+
     <style>
         body {
             font-family: 'Inter', sans-serif;
         }
+
         .text-glow {
             text-shadow: 0 0 20px rgba(16, 185, 129, 0.5);
         }
+
         .glass-nav {
             background: rgba(15, 23, 42, 0.8);
             backdrop-filter: blur(12px);
@@ -56,6 +59,7 @@
         }
     </style>
 </head>
+
 <body class="bg-gray-900 text-gray-100 min-h-screen flex flex-col">
 
     <!-- Navbar -->
@@ -64,58 +68,67 @@
             <div class="flex justify-between items-center h-16">
                 <!-- Logo -->
                 <div class="flex-shrink-0 flex items-center gap-3">
-                    <div class="w-8 h-8 rounded-lg bg-gradient-to-br from-emerald-400 to-cyan-500 flex items-center justify-center text-white font-bold text-xl shadow-lg shadow-emerald-500/20">
+                    <div
+                        class="w-8 h-8 rounded-lg bg-gradient-to-br from-emerald-400 to-cyan-500 flex items-center justify-center text-white font-bold text-xl shadow-lg shadow-emerald-500/20">
                         B
                     </div>
-                    <a href="{% url 'home' %}" class="font-bold text-xl tracking-tight text-white hover:text-emerald-400 transition-colors">
+                    <a href="{% url 'home' %}"
+                        class="font-bold text-xl tracking-tight text-white hover:text-emerald-400 transition-colors">
                         Book<span class="text-emerald-400">Mind</span>
                     </a>
                 </div>
 
                 <!-- Desktop Menu -->
                 <div class="hidden md:flex items-center space-x-8">
-                    <a href="{% url 'home' %}" class="text-sm font-medium text-gray-300 hover:text-white hover:bg-gray-800 px-3 py-2 rounded-md transition-all">
+                    <a href="{% url 'home' %}"
+                        class="text-sm font-medium text-gray-300 hover:text-white hover:bg-gray-800 px-3 py-2 rounded-md transition-all">
                         Discover
                     </a>
-                    <a href="{% url 'search_books' %}" class="text-sm font-medium text-gray-300 hover:text-white hover:bg-gray-800 px-3 py-2 rounded-md transition-all">
+                    <a href="{% url 'search_books' %}"
+                        class="text-sm font-medium text-gray-300 hover:text-white hover:bg-gray-800 px-3 py-2 rounded-md transition-all">
                         Search
                     </a>
                     {% if user.is_authenticated %}
-                        <a href="{% url 'dashboard' %}" class="text-sm font-medium text-gray-300 hover:text-white hover:bg-gray-800 px-3 py-2 rounded-md transition-all">
-                            Dashboard
-                        </a>
+                    <a href="{% url 'dashboard' %}"
+                        class="text-sm font-medium text-gray-300 hover:text-white hover:bg-gray-800 px-3 py-2 rounded-md transition-all">
+                        Dashboard
+                    </a>
                     {% endif %}
                 </div>
 
                 <!-- User Profile / Auth -->
                 <div class="hidden md:flex items-center gap-4">
                     {% if user.is_authenticated %}
-                        <div class="flex items-center gap-4 pl-4 border-l border-gray-700">
-                             <a href="{% url 'user_profile' %}" class="flex items-center gap-3 group">
-                                <div class="text-right hidden lg:block">
-                                    <p class="text-sm font-semibold text-gray-200 group-hover:text-emerald-400 transition">{{ user.username }}</p>
-                                    <p class="text-xs text-gray-500">Member</p>
-                                </div>
-                                {% if profile.profile_picture %}
-                                    <img src="{{ profile.profile_picture.url }}" class="w-9 h-9 rounded-full border-2 border-gray-700 group-hover:border-emerald-500 transition object-cover">
-                                {% else %}
-                                    <div class="w-9 h-9 rounded-full bg-gray-700 flex items-center justify-center text-xs border-2 border-gray-700 group-hover:border-emerald-500 transition">
-                                        {{ user.username|make_list|first|upper }}
-                                    </div>
-                                {% endif %}
-                            </a>
-                            <form method="POST" action="{% url 'logout' %}">
-                                {% csrf_token %}
-                                <button type="submit" class="text-gray-400 hover:text-white transition p-2">
-                                    <i class="fa-solid fa-right-from-bracket"></i>
-                                </button>
-                            </form>
-                        </div>
-                    {% else %}
-                        <a href="{% url 'login' %}" class="text-sm text-gray-300 hover:text-white font-medium">Log in</a>
-                        <a href="{% url 'register' %}" class="bg-emerald-600 hover:bg-emerald-500 text-white text-sm font-medium py-2 px-4 rounded-lg shadow-lg shadow-emerald-600/20 transition-all transform hover:-translate-y-0.5">
-                            Get Started
+                    <div class="flex items-center gap-4 pl-4 border-l border-gray-700">
+                        <a href="{% url 'user_profile' %}" class="flex items-center gap-3 group">
+                            <div class="text-right hidden lg:block">
+                                <p class="text-sm font-semibold text-gray-200 group-hover:text-emerald-400 transition">
+                                    {{ user.username }}</p>
+                                <p class="text-xs text-gray-500">Member</p>
+                            </div>
+                            {% if profile.profile_picture %}
+                            <img src="{{ profile.profile_picture.url }}"
+                                class="w-9 h-9 rounded-full border-2 border-gray-700 group-hover:border-emerald-500 transition object-cover">
+                            {% else %}
+                            <div
+                                class="w-9 h-9 rounded-full bg-gray-700 flex items-center justify-center text-xs border-2 border-gray-700 group-hover:border-emerald-500 transition">
+                                {{ user.username|make_list|first|upper }}
+                            </div>
+                            {% endif %}
                         </a>
+                        <form method="POST" action="{% url 'logout' %}">
+                            {% csrf_token %}
+                            <button type="submit" class="text-gray-400 hover:text-white transition p-2">
+                                <i class="fa-solid fa-right-from-bracket"></i>
+                            </button>
+                        </form>
+                    </div>
+                    {% else %}
+                    <a href="{% url 'login' %}" class="text-sm text-gray-300 hover:text-white font-medium">Log in</a>
+                    <a href="{% url 'register' %}"
+                        class="bg-emerald-600 hover:bg-emerald-500 text-white text-sm font-medium py-2 px-4 rounded-lg shadow-lg shadow-emerald-600/20 transition-all transform hover:-translate-y-0.5">
+                        Get Started
+                    </a>
                     {% endif %}
                 </div>
             </div>
@@ -125,14 +138,16 @@
     <!-- Main Content -->
     <main class="flex-grow pt-24 pb-12 px-4 sm:px-6 lg:px-8 max-w-7xl mx-auto w-full">
         {% if messages %}
-            <div class="mb-8 space-y-2">
-                {% for message in messages %}
-                    <div class="p-4 rounded-lg flex items-center gap-3 {% if message.tags == 'success' %}bg-emerald-500/10 text-emerald-400 border border-emerald-500/20{% elif message.tags == 'error' %}bg-red-500/10 text-red-400 border border-red-500/20{% else %}bg-blue-500/10 text-blue-400 border border-blue-500/20{% endif %}">
-                        <i class="fa-solid {% if message.tags == 'success' %}fa-check-circle{% elif message.tags == 'error' %}fa-exclamation-circle{% else %}fa-info-circle{% endif %}"></i>
-                        <p class="text-sm font-medium">{{ message }}</p>
-                    </div>
-                {% endfor %}
+        <div class="mb-8 space-y-2">
+            {% for message in messages %}
+            <div
+                class="p-4 rounded-lg flex items-center gap-3 {% if message.tags == 'success' %}bg-emerald-500/10 text-emerald-400 border border-emerald-500/20{% elif message.tags == 'error' %}bg-red-500/10 text-red-400 border border-red-500/20{% else %}bg-blue-500/10 text-blue-400 border border-blue-500/20{% endif %}">
+                <i
+                    class="fa-solid {% if message.tags == 'success' %}fa-check-circle{% elif message.tags == 'error' %}fa-exclamation-circle{% else %}fa-info-circle{% endif %}"></i>
+                <p class="text-sm font-medium">{{ message }}</p>
             </div>
+            {% endfor %}
+        </div>
         {% endif %}
 
         {% block content %}{% endblock %}
@@ -141,13 +156,14 @@
     <!-- Footer -->
     <footer class="border-t border-gray-800 bg-gray-900/50 backdrop-blur-sm mt-auto">
         <div class="max-w-7xl mx-auto py-8 px-4 flex flex-col md:flex-row justify-between items-center gap-4">
-            <p class="text-gray-500 text-sm">© 2024 BookMind. AI-Powered Reading Companion.</p>
+            <p class="text-gray-500 text-sm">© 2025 BookMind. AI-Powered Reading Companion.</p>
             <div class="flex space-x-6">
-                <a href="#" class="text-gray-500 hover:text-emerald-400 transition"><i class="fa-brands fa-github"></i></a>
-                <a href="#" class="text-gray-500 hover:text-emerald-400 transition"><i class="fa-brands fa-twitter"></i></a>
+                <a href="https://github.com/intensealchemist/"
+                    class="text-gray-500 hover:text-emerald-400 transition"><i class="fa-brands fa-github"></i></a>
             </div>
         </div>
     </footer>
 
 </body>
+
 </html>
